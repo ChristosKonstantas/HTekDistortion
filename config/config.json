@@ -1,0 +1,12 @@
+{
+  "plugin_name": "NewNamePlugin",
+  "company_name": "NewCompanyName",
+  "plugin_code": "0000",
+  "manufacturer_code": "AAAA",
+
+  "is_synth": false,
+  "needs_midi_input": false,
+  "needs_midi_output": false,
+
+  "formats": "VST3"
+}
