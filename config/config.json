@@ -1,8 +1,8 @@
 {
-  "plugin_name": "NewNamePlugin",
-  "company_name": "NewCompanyName",
-  "plugin_code": "0000",
-  "manufacturer_code": "AAAA",
+  "plugin_name": "HTekDistortion",
+  "company_name": "HTEK",
+  "plugin_code": "4444",
+  "manufacturer_code": "TSRA",
 
   "is_synth": false,
   "needs_midi_input": false,

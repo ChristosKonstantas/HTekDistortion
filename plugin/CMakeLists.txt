@@ -1,19 +1,19 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(PluginTemplate VERSION 0.0.0)
+project(HTekDistortion VERSION 0.0.0)
 
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/PluginTemplate")
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/HTekDistortion")
 set(SRC_DIR     "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 juce_add_plugin(${PROJECT_NAME}
-    COMPANY_NAME kiztam
+    COMPANY_NAME HTEK
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
-    PLUGIN_MANUFACTURER_CODE WLSD
-    PLUGIN_CODE M1lt
+    PLUGIN_MANUFACTURER_CODE TSRA
+    PLUGIN_CODE 4444
     FORMATS VST3
-    PRODUCT_NAME "PluginTemplate"
+    PRODUCT_NAME "HTekDistortion"
 )
 
 target_sources(${PROJECT_NAME}

@@ -1,8 +1,8 @@
-#include "PluginTemplate/PluginProcessor.h"
-#include "PluginTemplate/PluginEditor.h"
+#include "HTekDistortion/PluginProcessor.h"
+#include "HTekDistortion/PluginEditor.h"
 
 //==============================================================================
-PluginTemplateAudioProcessorEditor::PluginTemplateAudioProcessorEditor (PluginTemplateAudioProcessor& p)
+HTekDistortionAudioProcessorEditor::HTekDistortionAudioProcessorEditor (HTekDistortionAudioProcessor& p)
     : AudioProcessorEditor (&p), processorRef (p)
 {
     juce::ignoreUnused (processorRef);
@@ -11,12 +11,12 @@ PluginTemplateAudioProcessorEditor::PluginTemplateAudioProcessorEditor (PluginTe
     setSize (400, 300);
 }
 
-PluginTemplateAudioProcessorEditor::~PluginTemplateAudioProcessorEditor()
+HTekDistortionAudioProcessorEditor::~HTekDistortionAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void PluginTemplateAudioProcessorEditor::paint (juce::Graphics& g)
+void HTekDistortionAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
@@ -26,7 +26,7 @@ void PluginTemplateAudioProcessorEditor::paint (juce::Graphics& g)
     g.drawFittedText ("Audio Plugin Template", getLocalBounds(), juce::Justification::centred, 1);
 }
 
-void PluginTemplateAudioProcessorEditor::resized()
+void HTekDistortionAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..

@@ -3,11 +3,11 @@
 #include "PluginProcessor.h"
 
 //==============================================================================
-class PluginTemplateAudioProcessorEditor final : public juce::AudioProcessorEditor
+class HTekDistortionAudioProcessorEditor final : public juce::AudioProcessorEditor
 {
 public:
-    explicit PluginTemplateAudioProcessorEditor (PluginTemplateAudioProcessor&);
-    ~PluginTemplateAudioProcessorEditor() override;
+    explicit HTekDistortionAudioProcessorEditor (HTekDistortionAudioProcessor&);
+    ~HTekDistortionAudioProcessorEditor() override;
 
     //==============================================================================
     void paint (juce::Graphics&) override;
@@ -16,7 +16,7 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    PluginTemplateAudioProcessor& processorRef;
+    HTekDistortionAudioProcessor& processorRef;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginTemplateAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HTekDistortionAudioProcessorEditor)
 };

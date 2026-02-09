@@ -1,8 +1,8 @@
-#include "PluginTemplate/PluginProcessor.h"
-#include "PluginTemplate/PluginEditor.h"
+#include "HTekDistortion/PluginProcessor.h"
+#include "HTekDistortion/PluginEditor.h"
 
 //==============================================================================
-PluginTemplateAudioProcessor::PluginTemplateAudioProcessor()
+HTekDistortionAudioProcessor::HTekDistortionAudioProcessor()
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
@@ -14,17 +14,17 @@ PluginTemplateAudioProcessor::PluginTemplateAudioProcessor()
 {
 }
 
-PluginTemplateAudioProcessor::~PluginTemplateAudioProcessor()
+HTekDistortionAudioProcessor::~HTekDistortionAudioProcessor()
 {
 }
 
 //==============================================================================
-const juce::String PluginTemplateAudioProcessor::getName() const
+const juce::String HTekDistortionAudioProcessor::getName() const
 {
-    return "PluginTemplate";
+    return "HTekDistortion";
 }
 
-bool PluginTemplateAudioProcessor::acceptsMidi() const
+bool HTekDistortionAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -33,7 +33,7 @@ bool PluginTemplateAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool PluginTemplateAudioProcessor::producesMidi() const
+bool HTekDistortionAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -42,7 +42,7 @@ bool PluginTemplateAudioProcessor::producesMidi() const
    #endif
 }
 
-bool PluginTemplateAudioProcessor::isMidiEffect() const
+bool HTekDistortionAudioProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -51,53 +51,53 @@ bool PluginTemplateAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double PluginTemplateAudioProcessor::getTailLengthSeconds() const
+double HTekDistortionAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int PluginTemplateAudioProcessor::getNumPrograms()
+int HTekDistortionAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int PluginTemplateAudioProcessor::getCurrentProgram()
+int HTekDistortionAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void PluginTemplateAudioProcessor::setCurrentProgram (int index)
+void HTekDistortionAudioProcessor::setCurrentProgram (int index)
 {
     juce::ignoreUnused (index);
 }
 
-const juce::String PluginTemplateAudioProcessor::getProgramName (int index)
+const juce::String HTekDistortionAudioProcessor::getProgramName (int index)
 {
     juce::ignoreUnused (index);
     return {};
 }
 
-void PluginTemplateAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void HTekDistortionAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
     juce::ignoreUnused (index, newName);
 }
 
 //==============================================================================
-void PluginTemplateAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void HTekDistortionAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
 }
 
-void PluginTemplateAudioProcessor::releaseResources()
+void HTekDistortionAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
-bool PluginTemplateAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool HTekDistortionAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -121,7 +121,7 @@ bool PluginTemplateAudioProcessor::isBusesLayoutSupported (const BusesLayout& la
   #endif
 }
 
-void PluginTemplateAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
+void HTekDistortionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
                                               juce::MidiBuffer& midiMessages)
 {
     juce::ignoreUnused (midiMessages);
@@ -154,18 +154,18 @@ void PluginTemplateAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 }
 
 //==============================================================================
-bool PluginTemplateAudioProcessor::hasEditor() const
+bool HTekDistortionAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor* PluginTemplateAudioProcessor::createEditor()
+juce::AudioProcessorEditor* HTekDistortionAudioProcessor::createEditor()
 {
-    return new PluginTemplateAudioProcessorEditor (*this);
+    return new HTekDistortionAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void PluginTemplateAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void HTekDistortionAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
@@ -173,7 +173,7 @@ void PluginTemplateAudioProcessor::getStateInformation (juce::MemoryBlock& destD
     juce::ignoreUnused (destData);
 }
 
-void PluginTemplateAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void HTekDistortionAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -184,5 +184,5 @@ void PluginTemplateAudioProcessor::setStateInformation (const void* data, int si
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new PluginTemplateAudioProcessor();
+    return new HTekDistortionAudioProcessor();
 }

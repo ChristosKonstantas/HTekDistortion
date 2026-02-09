@@ -61,7 +61,7 @@ cmake --build build --config Release
 
 ### Step 3 - Run and Test
 
-The plugin will be available in the chosen format (VST3 by default). You can open it in your DAW for testing but make sure to copy `build\plugin\PluginTemplate_artefacts\Debug\VST3\PluginTemplate.vst3` folder in `C:\Program Files\Common Files\VST3` if you are using Windows, **or** just add the path to VST Plugin paths in your DAW and rescan for new plugins. [This](https://www.youtube.com/watch?v=aPMTYlMpbj0) video is helpful if you want to see how to use the Visual Studio Debugger with Reaper (but of course you can choose any other DAW of your preference).
+The plugin will be available in the chosen format (VST3 by default). You can open it in your DAW for testing but make sure to copy `build\plugin\HTekDistortion_artefacts\Debug\VST3\HTekDistortion.vst3` folder in `C:\Program Files\Common Files\VST3` if you are using Windows, **or** just add the path to VST Plugin paths in your DAW and rescan for new plugins. [This](https://www.youtube.com/watch?v=aPMTYlMpbj0) video is helpful if you want to see how to use the Visual Studio Debugger with Reaper (but of course you can choose any other DAW of your preference).
 
 ## Notes and Best Practices
 
