@@ -1,5 +1,5 @@
-#include "HTekDistortion/PluginProcessor.h"
-#include "HTekDistortion/PluginEditor.h"
+#include "PluginProcessor.hpp"
+#include "PluginEditor.hpp"
 
 //==============================================================================
 HTekDistortionAudioProcessor::HTekDistortionAudioProcessor()

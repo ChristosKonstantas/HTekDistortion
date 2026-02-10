@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.22)
 
 project(HTekDistortion VERSION 0.0.0)
 
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/HTekDistortion")
-set(SRC_DIR     "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(FX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/effects")
 
 juce_add_plugin(${PROJECT_NAME}
     COMPANY_NAME HTEK
@@ -20,14 +20,12 @@ target_sources(${PROJECT_NAME}
     PRIVATE
         ${SRC_DIR}/PluginEditor.cpp
         ${SRC_DIR}/PluginProcessor.cpp
-        ${INCLUDE_DIR}/PluginEditor.h
-        ${INCLUDE_DIR}/PluginProcessor.h
+        ${SRC_DIR}/PluginEditor.hpp
+        ${SRC_DIR}/PluginProcessor.hpp
+
 )
 
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+target_include_directories(${PROJECT_NAME} PUBLIC FX_DIR)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
@@ -60,9 +58,9 @@ source_group(
 )
 
 source_group(
-    TREE ${INCLUDE_DIR}
+    TREE ${SRC_DIR}
     PREFIX "Plugin Headers"
-    FILES ${INCLUDE_DIR}/PluginEditor.h ${INCLUDE_DIR}/PluginProcessor.h
+    FILES ${SRC_DIR}/PluginEditor.hpp ${SRC_DIR}/PluginProcessor.hpp
 )
 
 # JUCE files
