@@ -33,12 +33,12 @@ class HTekDistortionEffect final : public IEffect
         inline float waveshape(float x, float threshold, float kneeFrac) noexcept;
 
     private:
-        inline float dbToLin(float db) noexcept;
-
         float _sr = 48000.0f;
         int   _channels = 2;
 
         Params _params {};
         juce::dsp::StateVariableTPTFilter<float> _preHPF;
         juce::dsp::StateVariableTPTFilter<float> _postLPF;
+
+        inline float dbToLin(float db) noexcept;
 };

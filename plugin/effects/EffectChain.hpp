@@ -19,30 +19,30 @@ class EffectChain
             if (effect == nullptr || count >= kMaxEffects) 
                 return false;
             
-            effects[count++] = effect;
+            _effects[count++] = effect;
             return true;
         }
 
         void prepare (double sampleRate, int maxBlockSize, int numChannels)
         {
             for (int i = 0; i < count; ++i)
-                effects[i]->prepare (sampleRate, maxBlockSize, numChannels);
+                _effects[i]->prepare (sampleRate, maxBlockSize, numChannels);
         }
 
         void reset()
         {
             for (int i = 0; i < count; ++i)
-                effects[i]->reset();
+                _effects[i]->reset();
         }
 
         void process (juce::dsp::AudioBlock<float> block) noexcept
         {
             for (int i = 0; i < count; ++i)
-                effects[i]->process (block);
+                _effects[i]->process (block);
         }
 
     private:
-        std::array<IEffect*, kMaxEffects> effects {};
+        std::array<IEffect*, kMaxEffects> _effects {};
         int count = 0;
 };
 
