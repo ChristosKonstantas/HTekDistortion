@@ -1,13 +1,13 @@
 #include "Distortion.hpp"
 
-void HTekDistortionEffect::prepare (double sampleRate, int /*maxBlockSize*/, int numChannels)
+void HTekDistortionEffect::prepare (double sampleRate, int maxBlockSize, int numChannels)
 {
     _sr = sampleRate;
     _channels = juce::jmax (1, numChannels);
 
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = _sr;
-    spec.maximumBlockSize = 2048; // safe upper bound; actual is wrapped by AudioBlock
+    spec.maximumBlockSize = maxBlockSize;
     spec.numChannels = (juce::uint32) _channels;
 
     _preHPF.reset();

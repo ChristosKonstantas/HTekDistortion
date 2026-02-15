@@ -114,7 +114,7 @@ void HTekDistortionAudioProcessor::releaseResources()
 {
     _chain.reset();
     // oversampling.reset();
-    setLatencySamples (0);
+    // setLatencySamples (0);
 }
 
 //==============================================================================
