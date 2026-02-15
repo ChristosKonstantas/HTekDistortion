@@ -35,10 +35,10 @@ class EffectChain
                 effects[i]->reset();
         }
 
-        void process (juce::AudioBuffer<float>& buffer) noexcept
+        void process (juce::dsp::AudioBlock<float> block) noexcept
         {
             for (int i = 0; i < count; ++i)
-                effects[i]->process (buffer);
+                effects[i]->process (block);
         }
 
     private:

@@ -2,11 +2,7 @@
 #define EFFECT_HPP
 
 #include <juce_audio_basics/juce_audio_basics.h>
-
-struct EffectParamsBase
-{
-    virtual ~EffectParamsBase() = default;
-};
+#include <juce_dsp/juce_dsp.h>
 
 class IEffect
 {
@@ -17,7 +13,7 @@ class IEffect
         virtual void reset() = 0;
 
         // Real-time safe
-        virtual void process (juce::AudioBuffer<float>& buffer) noexcept = 0;
+        virtual void process (juce::dsp::AudioBlock<float> block) noexcept = 0;
 };
 
 #endif
