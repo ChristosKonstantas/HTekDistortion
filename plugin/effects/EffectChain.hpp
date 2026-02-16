@@ -9,41 +9,49 @@ class EffectChain
     public:
         static constexpr int kMaxEffects = 8;
 
-        void clear() noexcept 
-        { 
-            count = 0; 
+        void clear() noexcept
+        {
+            _count = 0;
+            _effects.fill(nullptr);
         }
 
         bool addEffect (IEffect* effect) noexcept
         {
-            if (effect == nullptr || count >= kMaxEffects) 
+            jassert(effect != nullptr);
+            jassert(_count < kMaxEffects);
+
+            if (effect == nullptr || _count >= kMaxEffects)
                 return false;
             
-            _effects[count++] = effect;
+            _effects[_count++] = effect;
             return true;
         }
 
         void prepare (double sampleRate, int maxBlockSize, int numChannels)
         {
-            for (int i = 0; i < count; ++i)
+            jassert(!_effects.empty());
+
+            for (int i = 0; i < _count; ++i)
                 _effects[i]->prepare (sampleRate, maxBlockSize, numChannels);
         }
 
         void reset()
         {
-            for (int i = 0; i < count; ++i)
+            jassert(!_effects.empty());
+
+            for (int i = 0; i < _count; ++i)
                 _effects[i]->reset();
         }
 
-        void process (juce::dsp::AudioBlock<float> block) noexcept
+        void process (juce::dsp::AudioBlock<float>& block) noexcept
         {
-            for (int i = 0; i < count; ++i)
+            for (int i = 0; i < _count; ++i)
                 _effects[i]->process (block);
         }
 
     private:
         std::array<IEffect*, kMaxEffects> _effects {};
-        int count = 0;
+        int _count = 0;
 };
 
 #endif

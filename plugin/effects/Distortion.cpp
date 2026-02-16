@@ -23,38 +23,6 @@ void HTekDistortionEffect::prepare (double sampleRate, int maxBlockSize, int num
     _postLPF.setCutoffFrequency (juce::jlimit (20.0f, 20000.0f, _params.postLPFHz));
 }
 
-// https://martin.ankerl.com/2012/01/25/optimized-approximative-pow-in-c-and-cpp/
-inline float HTekDistortionEffect::_fastPow(float a, float b) noexcept
-{
-    // calculate approximation with fraction of the exponent
-    int e = (int)b;
-    union {
-        double d;
-        int x[2];
-    } u = { a };
-    u.x[1] = (int)((b - e) * (u.x[1] - 1072632447) + 1072632447);
-    u.x[0] = 0;
-
-    // exponentiation by squaring with the exponent's integer part
-    // double r = u.d makes everything much slower, not sure why
-    double r = 1.0;
-    while (e) {
-        if (e & 1) {
-            r *= a;
-        }
-        a *= a;
-        e >>= 1;
-    }
-
-    return r * u.d;
-}
-inline float HTekDistortionEffect::_dbToLin(float db) noexcept
-{
-    return _fastPow(10.0f, db / 20.0f);
-}
-
-
-
 void HTekDistortionEffect::reset()
 {
     _preHPF.reset();
@@ -86,7 +54,7 @@ inline float HTekDistortionEffect::_waveshape(float x, float threshold, float kn
     return sign * y;
 }
 
-void HTekDistortionEffect::process (juce::dsp::AudioBlock<float> block) noexcept
+void HTekDistortionEffect::process (juce::dsp::AudioBlock<float>& block) noexcept
 {
     juce::ScopedNoDenormals noDenormals;
 
@@ -97,8 +65,8 @@ void HTekDistortionEffect::process (juce::dsp::AudioBlock<float> block) noexcept
 
     const Params p = _params;
 
-    const float drive   = _dbToLin (p.driveDb);
-    const float outGain = _dbToLin (p.outputDb);
+    const float drive   = juce::Decibels::decibelsToGain(p.driveDb);
+    const float outGain = juce::Decibels::decibelsToGain(p.outputDb);
     const float mix     = juce::jlimit (0.0f, 1.0f, p.mix);
 
     _preHPF.setCutoffFrequency  (juce::jlimit (20.0f, 20000.0f, p.preHPFHz));

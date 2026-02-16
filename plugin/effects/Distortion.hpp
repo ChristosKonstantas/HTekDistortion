@@ -21,7 +21,7 @@ class HTekDistortionEffect final : public IEffect
 
         void prepare (double sampleRate, int maxBlockSize, int numChannels) override;
         void reset() override;
-        void process (juce::dsp::AudioBlock<float> block) noexcept override;
+        void process (juce::dsp::AudioBlock<float>& block) noexcept override;
         void setParams (const Params& p) noexcept { _params = p; }
 
     private:
@@ -36,6 +36,4 @@ class HTekDistortionEffect final : public IEffect
         // - bias adds asymmetry (even harmonics)
         // - knee softens around threshold
         inline float _waveshape(float x, float threshold, float kneeFrac) noexcept;
-        inline float _dbToLin(float db) noexcept;
-        inline float _fastPow(float a, float b) noexcept;
 };

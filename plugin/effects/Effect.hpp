@@ -13,7 +13,7 @@ class IEffect
         virtual void reset() = 0;
 
         // Should be real-time safe
-        virtual void process (juce::dsp::AudioBlock<float> block) noexcept = 0;
+        virtual void process (juce::dsp::AudioBlock<float>& block) noexcept = 0;
 };
 
 #endif
