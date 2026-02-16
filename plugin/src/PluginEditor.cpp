@@ -3,34 +3,60 @@
 HTekDistortionAudioProcessorEditor::HTekDistortionAudioProcessorEditor (HTekDistortionAudioProcessor& p)
 : AudioProcessorEditor (&p), _proc (p)
 {
-    styleSlider (_drive,        "Drive (dB)");
-    styleSlider (_preHPF,       "preHPF (Hz)");
-    styleSlider (_threshold,    "Threshold");
-    styleSlider (_knee,         "Knee");
-    styleSlider (_bias,         "Bias");
-    styleSlider (_postLPF,      "postLPF (Hz)");
-    styleSlider (_mix,          "Mix");
-    styleSlider (_output,       "Output (dB)");
+    styleSlider (_drive,           "Drive (dB)");    addAndMakeVisible(_drive);
+    styleSlider (_preHPF,          "preHPF (Hz)");   addAndMakeVisible(_preHPF);
+    styleSlider (_threshold,       "Threshold");     addAndMakeVisible(_threshold);
+    styleSlider (_knee,            "Knee");          addAndMakeVisible(_knee);
+    styleSlider (_bias,            "Bias");          addAndMakeVisible(_bias);
+    styleSlider (_postLPF,         "postLPF (Hz)");  addAndMakeVisible(_postLPF);
+    styleSlider (_mix,             "Mix");           addAndMakeVisible(_mix);
+    styleSlider (_output,          "Output (dB)");   addAndMakeVisible(_output);
 
-    styleLabel(_driveLabel,     "Drive (dB)");    addAndMakeVisible(_driveLabel);
-    styleLabel(_preHPFLabel,    "preHPF (Hz)");   addAndMakeVisible(_preHPFLabel);
-    styleLabel(_thresholdLabel, "Threshold");     addAndMakeVisible(_thresholdLabel);
-    styleLabel(_kneeLabel,      "Knee");          addAndMakeVisible(_kneeLabel);
-    styleLabel(_biasLabel,      "Bias");          addAndMakeVisible(_biasLabel);
-    styleLabel(_postLPFLabel,   "postLPF (Hz)");  addAndMakeVisible(_postLPFLabel);
-    styleLabel(_mixLabel,       "Mix");           addAndMakeVisible(_mixLabel);
-    styleLabel(_outputLabel,    "Output (dB)");   addAndMakeVisible(_outputLabel);
+                                   
+    styleLabel(_driveLabel,        "Drive (dB)");    addAndMakeVisible(_driveLabel);
+    styleLabel(_preHPFLabel,       "preHPF (Hz)");   addAndMakeVisible(_preHPFLabel);
+    styleLabel(_thresholdLabel,    "Threshold");     addAndMakeVisible(_thresholdLabel);
+    styleLabel(_kneeLabel,         "Knee");          addAndMakeVisible(_kneeLabel);
+    styleLabel(_biasLabel,         "Bias");          addAndMakeVisible(_biasLabel);
+    styleLabel(_postLPFLabel,      "postLPF (Hz)");  addAndMakeVisible(_postLPFLabel);
+    styleLabel(_mixLabel,          "Mix");           addAndMakeVisible(_mixLabel);
+    styleLabel(_outputLabel,       "Output (dB)");   addAndMakeVisible(_outputLabel);
 
-    styleLabel(_oversamplingLabel, "Oversampling"); addAndMakeVisible(_oversamplingLabel);
+    styleLabel(_oversamplingLabel, "Oversampling");  addAndMakeVisible(_oversamplingLabel);
 
-    addAndMakeVisible (_drive);
-    addAndMakeVisible (_preHPF);
-    addAndMakeVisible (_threshold);
-    addAndMakeVisible (_knee);
-    addAndMakeVisible (_bias);
-    addAndMakeVisible (_postLPF);
-    addAndMakeVisible (_mix);
-    addAndMakeVisible (_output);
+    auto makeYellow = [](juce::Slider& s)
+    {
+        s.setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::yellow);
+        s.setColour(juce::Slider::thumbColourId, juce::Colours::yellow);
+        s.setColour(juce::Slider::textBoxTextColourId, juce::Colours::yellow);
+        s.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::yellow);
+    };
+    
+    auto makePurple = [](juce::Slider& s)
+    {
+        s.setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::orange);
+        s.setColour(juce::Slider::thumbColourId, juce::Colours::orange);
+        s.setColour(juce::Slider::textBoxTextColourId, juce::Colours::orange);
+        s.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::orange);
+    };
+    
+    makeYellow(_preHPF);
+    makeYellow(_postLPF);
+    makePurple(_threshold);
+    makePurple(_drive);
+    makePurple(_knee);
+    makePurple(_bias);
+    makePurple(_mix);
+    makePurple(_output);
+    
+    _preHPFLabel.setColour(juce::Label::textColourId, juce::Colours::yellow);
+    _postLPFLabel.setColour(juce::Label::textColourId, juce::Colours::yellow);
+    _driveLabel.setColour(juce::Label::textColourId, juce::Colours::orange);    
+    _thresholdLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+    _kneeLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+    _biasLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+    _mixLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+    _outputLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
 
     _oversampling.addItem ("Off", 1);
     _oversampling.addItem ("2x",  2);
@@ -39,17 +65,17 @@ HTekDistortionAudioProcessorEditor::HTekDistortionAudioProcessorEditor (HTekDist
     _oversampling.setJustificationType (juce::Justification::centred);
     addAndMakeVisible (_oversampling);
 
-    _aDrive     = std::make_unique<Attachment> (_proc.apvts, "driveDb",   _drive);
-    _apreHPF    = std::make_unique<Attachment> (_proc.apvts, "preHPFHz",  _preHPF);
-    _aThreshold = std::make_unique<Attachment> (_proc.apvts, "threshold", _threshold);
-    _aKnee      = std::make_unique<Attachment> (_proc.apvts, "knee",      _knee);
-    _aBias      = std::make_unique<Attachment> (_proc.apvts, "bias",      _bias);
-    _apostLPF   = std::make_unique<Attachment> (_proc.apvts, "postLPFHz", _postLPF);
-    _aMix       = std::make_unique<Attachment> (_proc.apvts, "mix",       _mix);
-    _aOutput    = std::make_unique<Attachment> (_proc.apvts, "outputDb",  _output);
-    _aOs        = std::make_unique<ChoiceAttachment> (_proc.apvts, "oversampling", _oversampling);
+    _aDrive     = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "driveDb",      _drive);
+    _apreHPF    = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "preHPFHz",     _preHPF);
+    _aThreshold = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "threshold",    _threshold);
+    _aKnee      = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "knee",         _knee);
+    _aBias      = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "bias",         _bias);
+    _apostLPF   = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "postLPFHz",    _postLPF);
+    _aMix       = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "mix",          _mix);
+    _aOutput    = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "outputDb",     _output);
+    _aOs        = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (_proc.apvts, "oversampling", _oversampling);
 
-    setSize (640, 320);
+    setSize (640, 350);
 }
 
 void HTekDistortionAudioProcessorEditor::styleSlider (juce::Slider& s, const juce::String& name)
@@ -68,49 +94,58 @@ void HTekDistortionAudioProcessorEditor::styleLabel(juce::Label& l, const juce::
 
 void HTekDistortionAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (juce::Colours::black);
-    g.setColour (juce::Colours::white);
-    g.setFont (16.0f);
-    g.drawFittedText ("HTekDistortion", getLocalBounds().removeFromTop(24), juce::Justification::centred, 1);
+    juce::ignoreUnused();
 }
 
 void HTekDistortionAudioProcessorEditor::resized()
 {
-    juce::Rectangle<int> r = getLocalBounds().reduced(10);
+    juce::Rectangle<int> r = getLocalBounds().reduced (10);
+    r.removeFromTop (10);
 
-    r.removeFromTop(24);
+    juce::Rectangle<int> bottomBar = r.removeFromBottom (30);
 
-    juce::Rectangle<int> bottomBar = r.removeFromBottom(30);
-    juce::Rectangle<int> topRow = r.removeFromTop(r.getHeight() / 2);
+    juce::Rectangle<int> topRow = r.removeFromTop (r.getHeight() / 2);
     juce::Rectangle<int> botRow = r;
-
-    auto cell = [] (juce::Rectangle<int>& row, int n)
-    {
-        const int w = row.getWidth() / n;
-        return row.removeFromLeft(w).reduced(6);
-    };
 
     auto placeKnobWithLabel = [] (juce::Slider& s, juce::Label& l, juce::Rectangle<int> area)
     {
-        juce::Rectangle<int> labelArea = area.removeFromTop(18);
-        l.setBounds(labelArea);
-        s.setBounds(area);
+        auto labelArea = area.removeFromTop (18);
+        l.setBounds (labelArea);
+        s.setBounds (area);
     };
 
-    juce::Rectangle<int> tr = topRow;
-    placeKnobWithLabel(_drive,     _driveLabel,     cell(tr, 4));
-    placeKnobWithLabel(_preHPF,    _preHPFLabel,    cell(tr, 4));
-    placeKnobWithLabel(_threshold, _thresholdLabel, cell(tr, 4));
-    placeKnobWithLabel(_knee,      _kneeLabel,      cell(tr, 4));
+    auto layoutRow4 = [&] (juce::Rectangle<int> row,
+                           juce::Slider& a, juce::Label& la,
+                           juce::Slider& b, juce::Label& lb,
+                           juce::Slider& c, juce::Label& lc,
+                           juce::Slider& d, juce::Label& ld)
+    {
+        constexpr int cols = 4;
+        const int w = row.getWidth() / cols;
+        const int used = w * cols;
+        const int pad = (row.getWidth() - used) / 2;
+        row.removeFromLeft (pad);
 
-    juce::Rectangle<int> br = botRow;
-    placeKnobWithLabel(_bias,    _biasLabel,    cell(br, 4));
-    placeKnobWithLabel(_postLPF, _postLPFLabel, cell(br, 4));
-    placeKnobWithLabel(_mix,     _mixLabel,     cell(br, 4));
-    placeKnobWithLabel(_output,  _outputLabel,  cell(br, 4));
+        placeKnobWithLabel (a, la, row.removeFromLeft(w).reduced(6));
+        placeKnobWithLabel (b, lb, row.removeFromLeft(w).reduced(6));
+        placeKnobWithLabel (c, lc, row.removeFromLeft(w).reduced(6));
+        placeKnobWithLabel (d, ld, row.removeFromLeft(w).reduced(6));
+    };
 
-    // Oversampling label + box (algorithm pending)
-    juce::Rectangle<int> osArea = bottomBar.removeFromRight(220);
-    _oversamplingLabel.setBounds(osArea.removeFromLeft(110).reduced(2));
-    _oversampling.setBounds(osArea.reduced(2));
+    layoutRow4 (topRow,
+                _drive,     _driveLabel,
+                _preHPF,    _preHPFLabel,
+                _threshold, _thresholdLabel,
+                _knee,      _kneeLabel);
+
+    layoutRow4 (botRow,
+                _bias,    _biasLabel,
+                _postLPF, _postLPFLabel,
+                _mix,     _mixLabel,
+                _output,  _outputLabel);
+
+    // Oversampling label + box
+    juce::Rectangle<int> osArea = bottomBar.removeFromRight (220);
+    _oversamplingLabel.setBounds (osArea.removeFromLeft (110).reduced (2));
+    _oversampling.setBounds (osArea.reduced (2));
 }
