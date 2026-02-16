@@ -37,4 +37,5 @@ class HTekDistortionEffect final : public IEffect
         // - knee softens around threshold
         inline float _waveshape(float x, float threshold, float kneeFrac) noexcept;
         inline float _dbToLin(float db) noexcept;
+        inline float _fastPow(float a, float b) noexcept;
 };
