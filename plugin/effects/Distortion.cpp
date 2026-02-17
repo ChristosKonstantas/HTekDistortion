@@ -37,20 +37,22 @@ inline float HTekDistortionEffect::_waveshape(float x, float threshold, float kn
     const float a = t * (1.0f - knee); // a: start of knee region
     const float b = t * (1.0f + knee); // b: end of knee region
 
-    const float ax = std::abs(x);
-    if (ax <= a) 
+    const float absX = x >= 0 ? x : -x;
+    // Region 1
+    if (absX <= a) // normally assignment falls in Region 3 but since we'll get the same result with |x| = a we avoid the Region 3 extra calculations
         return x;
 
+    // Region 2
     const float sign = (x >= 0.0f) ? 1.0f : -1.0f;
-    if (ax >= b) 
+    if (absX >= b) // normally assignment falls in Region 3 but since we'll get the same result with |x| = a we avoid the Region 3 extra calculations
         return sign * t;
     
-    //else
-
+    // Region 3
     // Map ax in [a,b] to u in [0,1], then smoothstep to interpolate to hard clip.
-    const float u = (ax - a) / (b - a);
-    const float s = u * u * (3.0f - 2.0f * u); // smoothstep
-    const float y = (1.0f - s) * ax + s * t;
+    const float u = (absX - a) / (b - a);
+    // const float s = u * u * (3.0f - 2.0f * u); // smoothstep
+    const float s = u*u*u*(u*(u*6.0f - 15.0f) + 10.0f); // smootherstep
+    const float y = (1.0f - s) * absX + s * t;
     return sign * y;
 }
 
