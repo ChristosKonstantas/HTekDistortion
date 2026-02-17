@@ -5,6 +5,7 @@ project(HTekDistortion VERSION 0.0.0)
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(FX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/effects")
 
+
 juce_add_plugin(${PROJECT_NAME}
     COMPANY_NAME HTEK
     IS_SYNTH FALSE
@@ -22,19 +23,12 @@ target_sources(${PROJECT_NAME}
         ${SRC_DIR}/PluginProcessor.cpp
         ${SRC_DIR}/PluginEditor.hpp
         ${SRC_DIR}/PluginProcessor.hpp
-        ${FX_DIR}/Effect.hpp
-        ${FX_DIR}/EffectChain.hpp
-        ${FX_DIR}/EffectChain.cpp
-        ${FX_DIR}/Distortion.hpp
-        ${FX_DIR}/Distortion.cpp
-
-
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC FX_DIR)
-
+# Plugin links to effects only (not Catch2)
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
+        HTekEffects
         juce::juce_audio_utils
         juce::juce_gui_basics
         juce::juce_core
@@ -88,3 +82,5 @@ if (DEFINED JUCE_SOURCE_DIR)
         PREFIX "JUCE"
     )
 endif()
+
+add_subdirectory(effects)
