@@ -44,7 +44,7 @@ inline float HTekDistortionEffect::_waveshape(float x, float threshold, float kn
 
     // Region 2
     const float sign = (x >= 0.0f) ? 1.0f : -1.0f;
-    if (absX >= b) // normally assignment falls in Region 3 but since we'll get the same result with |x| = a we avoid the Region 3 extra calculations
+    if (absX >= b) // normally assignment falls in Region 3 but since we'll get the same result with |x| = b we avoid the Region 3 extra calculations
         return sign * t;
     
     // Region 3
