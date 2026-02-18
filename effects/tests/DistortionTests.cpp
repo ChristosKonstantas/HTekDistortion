@@ -102,3 +102,78 @@ TEST_CASE("Waveshaper: Region 3 (knee) properties")
         }
     }
 }
+
+TEST_CASE("Distortion: mix=0 ignores distortion parameters (filters only)")
+{
+    const double fs = 48000.0;
+    const int N = 512;
+
+    juce::AudioBuffer<float> input(1, N);
+    for (int i = 0; i < N; ++i)
+        input.setSample(0, i, 0.8f * std::sin(6.28f * 440.0f * i / fs));
+
+    // create buffers to process
+    juce::AudioBuffer<float> buf1(input);
+    juce::AudioBuffer<float> buf2(input);
+
+    HTekDistortionEffect distortion1;
+    distortion1.prepare(fs, N, 1);
+
+    HTekDistortionEffect::Params p1;
+    p1.mix = 0.0f; // !!
+    p1.driveDb = 0.0f;
+    p1.threshold = 0.9f;
+    p1.knee = 0.1f;
+    p1.bias = 0.0f;
+    p1.outputDb = 0.0f;
+    p1.preHPFHz = 200.0f;
+    p1.postLPFHz = 4000.0f;
+    distortion1.setParams(p1);
+
+    // change distortion settings for distortion2 (mix=0 now see p1)
+    HTekDistortionEffect distortion2;
+    distortion2.prepare(fs, N, 1);
+
+    HTekDistortionEffect::Params p2 = p1;
+    p2.driveDb = 60.0f;
+    p2.threshold = 0.1f;
+    p2.knee = 0.5f;
+    p2.bias = 0.5f;
+    p2.outputDb = 18.0f;
+    distortion2.setParams(p2);
+
+    juce::dsp::AudioBlock<float> block1(buf1);
+    juce::dsp::AudioBlock<float> block2(buf2);
+    distortion1.process(block1);
+    distortion2.process(block2);
+
+    for (int i = 0; i < N; ++i)
+    {
+        REQUIRE(buf1.getSample(0, i) == Catch::Approx(buf2.getSample(0, i)).margin(1e-6f));
+    }
+}
+
+TEST_CASE("Distortion process: silence in gives silence out")
+{
+    const int bufSize = 256;
+    HTekDistortionEffect distortion;
+    distortion.prepare(48000.0, bufSize, 1);
+
+    HTekDistortionEffect::Params p;
+    p.mix = 1.0f;
+    p.driveDb = 30.0f;
+    p.threshold = 0.2f;
+    p.knee = 0.6f;
+    p.bias = 0.3f;
+    distortion.setParams(p);
+
+    juce::AudioBuffer<float> buf1(1, bufSize);
+    for (int i = 0; i < bufSize; ++i)
+        buf1.setSample(0, i, 0.0f);
+
+    juce::dsp::AudioBlock<float> block1(buf1);
+    distortion.process(block1);
+
+    for (int i = 0; i < bufSize; ++i)
+        REQUIRE(block1.getSample(0, i) == Catch::Approx(0.0f).margin(1e-8f));
+}
