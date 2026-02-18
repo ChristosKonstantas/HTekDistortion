@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(HTekDistortion VERSION 0.0.0)
+project(HTekDistortion VERSION 0.1.0)
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(FX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/effects")
