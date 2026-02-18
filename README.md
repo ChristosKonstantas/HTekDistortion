@@ -127,32 +127,48 @@ Should be used to reduce aliasing artifacts introduced by the nonlinearity by pr
 You can build the plugin in **Debug** or **Release** mode. In your project root directory execute:
 
 * ### Debug
-    #### Windows
+    #### Windows (Visual Studio / multi-config)
     ```
-    cmake -B build
+    cmake -B build 
+    cmake --build build --config Debug
+    ```
+    #### Windows (Ninja / single-config)
+    ```
+    cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
     cmake --build build
     ```
-    (Adding `--config Debug` works the same but is unnecessary, since this is done by default)
-
-    #### Linux/macOS
+    #### macOS (Xcode / multi-config)
+    ```
+    cmake -B build -G Xcode
+    cmake --build build --config Debug
+    ```
+    #### Linux/macOS (Ninja/Makefiles / single-config)
     ```
     cmake -B build -DCMAKE_BUILD_TYPE=Debug
     cmake --build build
     ```
-
 * ### Release
-    #### Windows
+    #### Windows (Visual Studio / multi-config)
     ```
-    cmake -B build
+    cmake -B build 
     cmake --build build --config Release
     ```
+    #### Windows (Ninja / single-config)
+    ```
+    cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+    cmake --build build
+    ```
 
-    #### Linux/macOS
+    #### macOS (Xcode / multi-config)
+    ```
+    cmake -B build -G Xcode
+    cmake --build build --config Release
+    ```
+    #### Linux/macOS (Ninja/Makefiles / single-config)
     ```
     cmake -B build -DCMAKE_BUILD_TYPE=Release
     cmake --build build
     ```
-
 Plugin artefacts are under `build/plugin/*_artefacts/*/VST3/....`
 
 
