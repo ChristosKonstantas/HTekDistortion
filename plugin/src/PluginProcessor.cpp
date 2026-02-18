@@ -131,6 +131,7 @@ void HTekDistortionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     for (int ch = getTotalNumInputChannels(); ch < getTotalNumOutputChannels(); ++ch)
         buffer.clear (ch, 0, numSamples);
 
+    // The loads/reads below are synchronized at the atomic level and cannot race with stores.
     HTekDistortionEffect::Params p;
     p.driveDb   = _driveDb->load();
     p.preHPFHz  = _preHPFHz->load();
@@ -141,6 +142,7 @@ void HTekDistortionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     p.mix       = _mix->load();
     p.outputDb  = _outputDb->load();
 
+    // we can safely set distortion parameters before distortion is processed in the chain
     _distortion.setParams (p);
 
     juce::dsp::AudioBlock<float> baseBlock (buffer);
@@ -167,31 +169,31 @@ juce::AudioProcessorValueTreeState::ParameterLayout HTekDistortionAudioProcessor
 
     params.push_back (std::make_unique<juce::AudioParameterFloat>(
         "driveDb", "Drive",
-        juce::NormalisableRange<float> (0.0f, 36.0f, 0.01f), 18.0f));
+        juce::NormalisableRange<float> (0.0f, 24.0f, 0.01f), 5.0f));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat>(
         "preHPFHz", "preHPF (HPF)",
-        juce::NormalisableRange<float> (20.0f, 700.0f, 0.01f, 0.5f), 80.0f));
+        juce::NormalisableRange<float> (20.0f, 700.0f, 1.0f, 0.5f), 80.0f));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat>(
         "threshold", "Threshold",
-        juce::NormalisableRange<float> (0.05f, 1.0f, 0.0001f), 0.7f));
+        juce::NormalisableRange<float> (0.05f, 1.0f, 0.01f), 0.7f));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat>(
         "knee", "Knee",
-        juce::NormalisableRange<float> (0.0f, 0.80f, 0.0001f), 0.12f));
+        juce::NormalisableRange<float> (0.0f, 0.50f, 0.01f), 0.12f));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat>(
         "bias", "Bias",
-        juce::NormalisableRange<float> (-0.5f, 0.5f, 0.0001f), 0.08f));
+        juce::NormalisableRange<float> (-0.2f, 0.2f, 0.01f), 0.08f));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat>(
         "postLPFHz", "postLPF (LPF)",
-        juce::NormalisableRange<float> (3000.0f, 20000.0f, 0.01f, 0.5f), 12000.0f));
+        juce::NormalisableRange<float> (1500.0f, 20000.0f, 1.0f, 0.5f), 12000.0f));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat>(
         "mix", "Mix",
-        juce::NormalisableRange<float> (0.0f, 1.0f, 0.0001f), 1.0f));
+        juce::NormalisableRange<float> (0.0f, 1.0f, 0.01f), 0.8f));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat>(
         "outputDb", "Output",

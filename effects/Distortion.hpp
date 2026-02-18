@@ -7,7 +7,7 @@ class HTekDistortionEffect final : public IEffect
     public:
         struct Params
         {
-            float driveDb = 18.0f;      // pre-gain
+            float driveDb = 3.0f;       // pre-gain
             float preHPFHz = 80.0f;     // pre HPF
             float threshold = 0.7f;     // clip threshold
             float knee = 0.12f;         // 0..0.8 soft knee width (fraction of threshold)

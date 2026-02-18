@@ -7,7 +7,7 @@
 class EffectChain
 {
     public:
-        static constexpr int kMaxEffects = 8;
+        static constexpr int numMaxEffects = 8;
 
         void clear() noexcept
         {
@@ -18,9 +18,9 @@ class EffectChain
         bool addEffect (IEffect* effect) noexcept
         {
             jassert(effect != nullptr);
-            jassert(_count < kMaxEffects);
+            jassert(_count < numMaxEffects);
 
-            if (effect == nullptr || _count >= kMaxEffects)
+            if (effect == nullptr || _count >= numMaxEffects)
                 return false;
             
             _effects[_count++] = effect;
@@ -52,7 +52,7 @@ class EffectChain
         }
 
     private:
-        std::array<IEffect*, kMaxEffects> _effects {};
+        std::array<IEffect*, numMaxEffects> _effects {};
         int _count = 0;
 };
 

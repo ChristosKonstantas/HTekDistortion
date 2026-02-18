@@ -47,7 +47,7 @@ inline float HTekDistortionEffect::_waveshape(float x, float threshold, float kn
     if (absX >= b) // normally assignment falls in Region 3 but since we'll get the same result with |x| = b we avoid the Region 3 extra calculations
         return sign * t;
     
-    // Region 3
+    // Region 3 https://en.wikipedia.org/wiki/Smoothstep
     // Map ax in [a,b] to u in [0,1], then smoothstep to interpolate to hard clip.
     const float u = (absX - a) / (b - a);
     // const float s = u * u * (3.0f - 2.0f * u); // smoothstep
