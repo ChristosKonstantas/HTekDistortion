@@ -90,7 +90,7 @@ void HTekDistortionEffect::process (juce::dsp::AudioBlock<float>& block) noexcep
             const float dry = data[i];
             const float x   = dry * drive;
 
-            float y = _waveshape (x + b, p.threshold, p.knee) - y0;
+            float y = _waveshape (x + b, p.threshold, p.knee) - y0; // DC-correction (subtract y0)
             y *= outGain;
 
             data[i] = dry + (y - dry) * mix; // dry*(1−mix) + y*mix but with 3 operations than 4
