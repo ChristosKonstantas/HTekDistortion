@@ -23,6 +23,14 @@ class HTekDistortionEffect final : public IEffect
         void reset() override;
         void process (juce::dsp::AudioBlock<float>& block) noexcept override;
         void setParams (const Params& p) noexcept { _params = p; }
+        
+        #if defined(ACTIVE_TEST)
+        static float waveshapeTest(float x, float threshold, float kneeFrac) noexcept
+        {
+            HTekDistortionEffect d;
+            return d._waveshape(x, threshold, kneeFrac);
+        }
+        #endif
 
     private:
         double _sr = 48000.0f;

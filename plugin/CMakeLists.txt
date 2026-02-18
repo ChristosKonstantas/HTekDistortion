@@ -63,18 +63,6 @@ source_group(
     FILES ${SRC_DIR}/PluginEditor.hpp ${SRC_DIR}/PluginProcessor.hpp
 )
 
-source_group(
-    TREE ${FX_DIR}
-    PREFIX "FX Headers"
-    FILES ${FX_DIR}/Effect.hpp ${FX_DIR}/EffectChain.hpp ${FX_DIR}/Distortion.hpp
-)
-
-source_group(
-    TREE ${FX_DIR}
-    PREFIX "FX Sources"
-    FILES ${FX_DIR}/EffectChain.cpp ${FX_DIR}/Distortion.cpp
-)
-
 # JUCE files
 if (DEFINED JUCE_SOURCE_DIR)
     source_group(
