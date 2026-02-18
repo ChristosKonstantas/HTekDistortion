@@ -64,7 +64,9 @@ HTekDistortionAudioProcessorEditor::HTekDistortionAudioProcessorEditor (HTekDist
     _oversampling.addItem ("8x",  4);
     _oversampling.setJustificationType (juce::Justification::centred);
     addAndMakeVisible (_oversampling);
-
+    
+    // The following attachments are bound to _proc.apvts thus the attachments update the APVTS parameters and not the DSP state. 
+    // Only the audio thread touches DSP objects. UI only touches APVTS (data-races prevented).
     _aDrive     = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "driveDb",      _drive);
     _apreHPF    = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "preHPFHz",     _preHPF);
     _aThreshold = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>   (_proc.apvts, "threshold",    _threshold);
@@ -94,7 +96,8 @@ void HTekDistortionAudioProcessorEditor::styleLabel(juce::Label& l, const juce::
 
 void HTekDistortionAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    juce::ignoreUnused();
+    g.fillAll(juce::Colours::black);
+
 }
 
 void HTekDistortionAudioProcessorEditor::resized()
