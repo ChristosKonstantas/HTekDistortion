@@ -3,7 +3,7 @@
 ## Description
 A piecewise, memoryless soft-knee hard clipper, where the knee transition is implemented by smoothstep interpolation between linear and saturated regions, with optional bias and baseline subtraction (DC compensation).
 
-![alt text](images/plugin.png)
+<img src="images/plugin.png" width="620" height="320">
 
 ### Drive (driveDb)
 
@@ -15,7 +15,7 @@ High-pass filter cutoff (StateVariableTPTFilter highpass) that runs before the w
 
 ### Threshold (threshold)
 
-Sets the clip ceiling. Increasing threshold allows higher peaks through → often louder and less saturated.
+Sets the clip ceiling. Increasing threshold allows higher peaks through, often louder and less saturated.
 
 ### Knee (knee)
 
@@ -39,8 +39,16 @@ Applied to the distorted (wet) signal after waveshaping (before mix) for level t
 ### Oversampling (pending)
 Should be used to reduce aliasing artifacts introduced by the nonlinearity by processing at a higher sample rate and filtering before downsampling (pending).
 
+## Signal flow from input to output within JUCE
+<img src="images/sflow.png">
+
+
+Here we assume that the entire processing graph in the DAW contains only the HTekDistortion plugin.
+
 ## Distortion Algorithm
-![alt text](images/distortion.png)
+### HTEKDistortionEffect::process(block)
+<img src="images/distortion.png">
+
 
 ## Configure Libraries
 * ### JUCE_LIB
