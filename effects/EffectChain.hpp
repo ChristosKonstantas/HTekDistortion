@@ -29,7 +29,7 @@ class EffectChain
 
         void prepare (double sampleRate, int maxBlockSize, int numChannels)
         {
-            jassert(!_effects.empty());
+            jassert(_count > 0);
 
             for (int i = 0; i < _count; ++i)
                 _effects[i]->prepare (sampleRate, maxBlockSize, numChannels);
@@ -45,6 +45,8 @@ class EffectChain
 
         void process (juce::dsp::AudioBlock<float>& block) noexcept
         {
+            jassert(!_effects.empty());
+
             for (int i = 0; i < _count; ++i)
                 _effects[i]->process (block);
         }
