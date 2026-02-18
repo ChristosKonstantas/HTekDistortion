@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(HTekDistortion LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+set(CMAKE_CXX_EXTENSIONS OFF)
 # If (JUCE_LIB EXISTS)     # JUCE_LIB must point to the JUCE source root (the one containing CMakeLists.txt and modules/)
 # Setup JUCE first via environment variable JUCE_LIB
 # Add JUCE as a subdirectory and keep its build artifacts out of the main tree
