@@ -65,4 +65,5 @@ if(BUILD_TESTS)
 
 endif()
 
+add_subdirectory(effects)
 add_subdirectory(plugin)

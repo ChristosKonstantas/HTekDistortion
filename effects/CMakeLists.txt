@@ -10,8 +10,10 @@ add_library(HTekEffects STATIC
     ${FX_DIR}/Distortion.cpp
 )
 
-target_include_directories(HTekEffects PUBLIC ${FX_DIR})
-
+target_include_directories(HTekEffects
+    PUBLIC
+        ${CMAKE_SOURCE_DIR}
+)
 target_link_libraries(HTekEffects PUBLIC
         juce::juce_core
         juce::juce_audio_basics

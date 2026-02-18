@@ -47,7 +47,6 @@ target_compile_definitions(${PROJECT_NAME}
         JUCE_USE_CURL=0
         JUCE_VST3_CAN_REPLACE_VST2=0
 )
-
 # Visual Studio filters to separate Plugin files from JUCE files.
 
 # Plugin files
@@ -70,5 +69,3 @@ if (DEFINED JUCE_SOURCE_DIR)
         PREFIX "JUCE"
     )
 endif()
-
-add_subdirectory(effects)
