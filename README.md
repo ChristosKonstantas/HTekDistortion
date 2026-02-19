@@ -39,13 +39,22 @@ Applied to the distorted (wet) signal after waveshaping (before mix) for level t
 ### Oversampling (pending)
 Should be used to reduce aliasing artifacts introduced by the nonlinearity by processing at a higher sample rate and filtering before downsampling (pending).
 
-## Signal flow from input to output within JUCE
+## Signal flow from input to output
 <img src="images/sflow.png">
 
 
 Here we assume that the entire processing graph in the DAW contains only the HTekDistortion plugin.
 
 ## Distortion Algorithm
+### Waveshapers
+<img src="images/tfs.png">
+
+### Before VS After Waveshaping
+<img src="images/sinewavesh.png">
+
+### Spectrum Before VS After Waveshaping
+<img src="images/harmonics.png">
+
 ### HTEKDistortionEffect::process(block)
 <img src="images/distortion.png">
 
