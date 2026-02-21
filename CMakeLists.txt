@@ -1,12 +1,26 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(HTekDistortion LANGUAGES C CXX)
+project(HTekDistortion LANGUAGES C CXX VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 # If (JUCE_LIB EXISTS)     # JUCE_LIB must point to the JUCE source root (the one containing CMakeLists.txt and modules/)
 # Setup JUCE first via environment variable JUCE_LIB
 # Add JUCE as a subdirectory and keep its build artifacts out of the main tree
+
+option(MYPLUGIN_ENABLE_LV2 "LV2 format is enabled (Linux)" OFF)
+
+set(PLUGIN_FORMATS VST3)              
+
+if(APPLE)
+  set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "" FORCE)
+  list(APPEND PLUGIN_FORMATS AU)       
+endif()
+
+if(UNIX AND NOT APPLE AND MYPLUGIN_ENABLE_LV2)
+  list(APPEND PLUGIN_FORMATS LV2) 
+endif()
 
 if(DEFINED ENV{JUCE_LIB} AND NOT EXISTS "$ENV{JUCE_LIB}/modules")
   message(FATAL_ERROR
