@@ -95,6 +95,7 @@ TEST_CASE("Waveshaper: Region 3 (knee) properties")
             REQUIRE((y >= 0.0f) == (x >= 0.0f));
 
             // |y| in range  (|x|, t)
+            // as |y| is a weighted average between |x| and t -> y = (1-s) * |x| + s * t
             const float lower = std::min(absX, t);
             const float upper = std::max(absX, t);
             REQUIRE(absY >= lower - 1e-6f);
