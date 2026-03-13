@@ -34,6 +34,8 @@ inline float HTekDistortionEffect::_waveshape(float x, float threshold, float kn
 
     const float a = t * (1.0f - knee); // a: start of knee region
     const float b = t * (1.0f + knee); // b: end of knee region
+    
+    const float sign = (x >= 0.0f) ? 1.0f : -1.0f;
 
     const float absX = x >= 0 ? x : -x;
     // Region 1
@@ -41,7 +43,6 @@ inline float HTekDistortionEffect::_waveshape(float x, float threshold, float kn
         return x;
 
     // Region 2
-    const float sign = (x >= 0.0f) ? 1.0f : -1.0f;
     if (absX >= b) // normally assignment falls in Region 3 but since we'll get the same result with |x| = b we avoid the Region 3 extra calculations
         return sign * t;
     
