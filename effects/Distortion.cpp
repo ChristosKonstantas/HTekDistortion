@@ -2,13 +2,11 @@
 
 void HTekDistortionEffect::prepare (double sampleRate, int maxBlockSize, int numChannels)
 {
-    _sr = sampleRate;
-    _channels = juce::jmax (1, numChannels);
-
     juce::dsp::ProcessSpec spec;
-    spec.sampleRate = _sr;
-    spec.maximumBlockSize = maxBlockSize;
-    spec.numChannels = (juce::uint32) _channels;
+
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = (juce::uint32) maxBlockSize;
+    spec.numChannels = (juce::uint32) numChannels;
 
     _preHPF.reset();
     _postLPF.reset();
@@ -31,8 +29,8 @@ void HTekDistortionEffect::reset()
 
 inline float HTekDistortionEffect::_waveshape(float x, float threshold, float kneeFrac) noexcept
 {
-    const float t = juce::jlimit(0.01f, 1.0f, threshold);
-    const float knee = juce::jlimit(0.0f, 0.8f, kneeFrac);
+    const float t = juce::jlimit(0.05f, 1.0f, threshold);
+    const float knee = juce::jlimit(0.0f, 0.5f, kneeFrac);
 
     const float a = t * (1.0f - knee); // a: start of knee region
     const float b = t * (1.0f + knee); // b: end of knee region
@@ -70,7 +68,7 @@ void HTekDistortionEffect::process (juce::dsp::AudioBlock<float>& block) noexcep
     const float drive   = juce::Decibels::decibelsToGain(p.driveDb);
     const float outGain = juce::Decibels::decibelsToGain(p.outputDb);
     const float mix     = juce::jlimit (0.0f, 1.0f, p.mix);
-
+    
     _preHPF.setCutoffFrequency  (juce::jlimit (20.0f, 20000.0f, p.preHPFHz));
     _postLPF.setCutoffFrequency (juce::jlimit (20.0f, 20000.0f, p.postLPFHz));
 

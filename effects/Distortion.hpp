@@ -33,9 +33,6 @@ class HTekDistortionEffect final : public IEffect
         #endif
 
     private:
-        double _sr = 48000.0f;
-        int   _channels = 2;
-
         Params _params {};
         juce::dsp::StateVariableTPTFilter<float> _preHPF;
         juce::dsp::StateVariableTPTFilter<float> _postLPF;
