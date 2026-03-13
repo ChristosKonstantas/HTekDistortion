@@ -32,7 +32,7 @@ HTekDistortionAudioProcessorEditor::HTekDistortionAudioProcessorEditor (HTekDist
         s.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::yellow);
     };
     
-    auto makePurple = [](juce::Slider& s)
+    auto makeOrange = [](juce::Slider& s)
     {
         s.setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::orange);
         s.setColour(juce::Slider::thumbColourId, juce::Colours::orange);
@@ -42,12 +42,12 @@ HTekDistortionAudioProcessorEditor::HTekDistortionAudioProcessorEditor (HTekDist
     
     makeYellow(_preHPF);
     makeYellow(_postLPF);
-    makePurple(_threshold);
-    makePurple(_drive);
-    makePurple(_knee);
-    makePurple(_bias);
-    makePurple(_mix);
-    makePurple(_output);
+    makeOrange(_threshold);
+    makeOrange(_drive);
+    makeOrange(_knee);
+    makeOrange(_bias);
+    makeOrange(_mix);
+    makeOrange(_output);
     
     _preHPFLabel.setColour(juce::Label::textColourId, juce::Colours::yellow);
     _postLPFLabel.setColour(juce::Label::textColourId, juce::Colours::yellow);
