@@ -28,7 +28,7 @@ class HTekDistortionEffect final : public IEffect
         static float waveshapeTest(float x, float threshold, float kneeFrac) noexcept
         {
             HTekDistortionEffect d;
-            return d._waveshape(x, threshold, kneeFrac);
+            return d.waveshape(x, threshold, kneeFrac);
         }
         #endif
 
@@ -40,5 +40,5 @@ class HTekDistortionEffect final : public IEffect
         /* Smooth hard clip with soft-knee transition*/
         // - bias adds asymmetry (even harmonics)
         // - knee softens around threshold
-        inline float _waveshape(float x, float threshold, float kneeFrac) noexcept;
+        inline float waveshape(float x, float threshold, float kneeFrac) noexcept;
 };

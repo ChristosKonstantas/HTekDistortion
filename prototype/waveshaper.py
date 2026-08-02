@@ -1,20 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def smoothstep(u):
-    u = np.clip(u, 0.0, 1.0)
-    return u*u*(3 - 2*u)
-
-
-def smootherstep(u):
-    u = np.clip(u, 0.0, 1.0)
-    return  u*u*u*(u*(u*6 - 15) + 10)
-
+def quartic(u):
+    return u - u**3 + 1/2 * u **4
 
 def waveshape(x, threshold, knee_frac):
     x = np.asarray(x, dtype=np.float32)
     t = np.clip(threshold, 0.01, 1.0)
-    k = np.clip(knee_frac, 0.0, 0.49)
+    k = np.clip(knee_frac, 0.0, 0.5)
 
     a = t * (1.0 - k)   # knee start
     b = t * (1.0 + k)   # knee end
@@ -38,8 +31,8 @@ def waveshape(x, threshold, knee_frac):
     if np.any(m2):
         u = (ax[m2] - a) / (b - a)
         u = np.clip(u, 0.0, 1.0)
-        s = smootherstep(u)
-        yk = (1.0 - s) * ax[m2] + s * t
+        q = quartic(u)
+        yk = a + (b-a) * q
         y[m2] = sign[m2] * yk
 
     return y
@@ -53,9 +46,9 @@ if __name__ == "__main__":
     xs = np.linspace(-1.2, 1.2, 4000)
 
     settings = [
-        (0.6, 0.0),  # hard clip at +-0.6
-        (0.6, 0.1),  # slightly softer knee
-        (1, 0.5),    # wide knee
+        (0.7, 0.0),  # hard clip at +-0.7
+        (0.6, 0.3),  # softer knee
+        (0.4, 0.5),  # wide knee
         (0.3, 0.1),  # lower threshold = heavier distortion
     ]
 
@@ -73,16 +66,21 @@ if __name__ == "__main__":
     # (2) Time domain: sine before/after
     fs = 48000
     f = 200
-    dur = 256 / 48000
-    n = int(fs * dur)
-    tvec = np.arange(n) / fs
+    buffer_size_samples = 256
+    duration_seconds = buffer_size_samples / fs
+    total_samples = int(fs * duration_seconds)
+    tvec = np.arange(total_samples) / fs
+    tvec_ms = tvec * 1000
 
+    # select settings
+    threshold = settings[1][0]
+    knee = settings[1][1]
     x = 0.9 * np.sin(2*np.pi*f*tvec)
-    y = waveshape(x, threshold=0.5, knee_frac=0.4)
+    y = waveshape(x, threshold=threshold, knee_frac=knee)
 
     plt.figure()
-    plt.plot(tvec*1000, x, label="input")
-    plt.plot(tvec*1000, y, label="output")
+    plt.plot(tvec_ms, x, label="input")
+    plt.plot(tvec_ms, y, label=f"output (threshold={threshold}, knee={knee})")
     plt.title("Time domain: sine before/after waveshaping")
     plt.xlabel("time (ms)")
     plt.ylabel("amplitude")
@@ -96,7 +94,8 @@ if __name__ == "__main__":
     tvec = np.arange(n) / fs
 
     x = 0.9 * np.sin(2*np.pi*f*tvec)
-    y = waveshape(x, threshold=0.4, knee_frac=0.0)
+    knee = settings[1][1]
+    y = waveshape(x, threshold=threshold, knee_frac=knee)
 
     w = np.blackman(n)
     X = np.fft.rfft(x * w)
@@ -105,22 +104,10 @@ if __name__ == "__main__":
 
     plt.figure()
     plt.semilogx(freqs[1:], 20*np.log10(np.abs(X[1:]) + 1e-12), label="input")
-    plt.semilogx(freqs[1:], 20*np.log10(np.abs(Y[1:]) + 1e-12), label="output")
+    plt.semilogx(freqs[1:], 20*np.log10(np.abs(Y[1:]) + 1e-12), label=f"output (threshold={threshold}, knee={knee})")
     plt.title("Spectrum: input vs output (harmonics from distortion)")
     plt.xlabel("frequency (Hz)")
     plt.ylabel("magnitude (dB)")
     plt.grid(True, which="both")
     plt.legend()
-    plt.show()
-
-    Y = np.fft.rfft(y)
-    freqs = np.fft.rfftfreq(n, 1/fs)
-    plt.semilogx(freqs[1:], 20*np.log10(np.abs(Y[1:]) + 1e-12))
-    plt.grid(True, which="both")
-    plt.title("Spectrum: input vs output (harmonics from distortion)")
-    plt.xlabel("frequency (Hz)")
-    plt.ylabel("magnitude (linear)")
-    plt.grid(True, which="both")
-    plt.legend()
-    plt.show()
     plt.show()

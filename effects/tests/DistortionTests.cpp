@@ -66,6 +66,9 @@ TEST_CASE("Waveshaper: Region 2 / Hard clipping")
 
 TEST_CASE("Waveshaper: Region 3 (knee) properties")
 {
+    //input knee: ∣x∣ travels from a to b
+    // output knee: ∣y∣ travels from a to t
+    // output never exceeds the input magnitude
     const float t    = 0.5f;
     const float knee = 0.2f;
 
@@ -79,7 +82,6 @@ TEST_CASE("Waveshaper: Region 3 (knee) properties")
     REQUIRE(HTekDistortionEffect::waveshapeTest(-b, t, knee) == Catch::Approx(-t).margin( 1e-6f));
 
     const int N = 1000;
-    float prevAbsY = 0.0f;
 
     for (int i = 1; i < N; ++i)
     {
@@ -94,13 +96,49 @@ TEST_CASE("Waveshaper: Region 3 (knee) properties")
             // sign preserved
             REQUIRE((y >= 0.0f) == (x >= 0.0f));
 
-            // |y| in range  (|x|, t)
-            // as |y| is a weighted average between |x| and t -> y = (1-s) * |x| + s * t
-            const float lower = std::min(absX, t);
-            const float upper = std::max(absX, t);
-            REQUIRE(absY >= lower - 1e-6f);
-            REQUIRE(absY <= upper + 1e-6f);
+            // |y| in range  (a, t)
+            REQUIRE(absY >= a - 1e-6f);
+            REQUIRE(absY <= t + 1e-6f);
+
+            // |y| <= |x|
+            REQUIRE(absY <= absX + 1e-6f);
         }
+    }
+}
+
+TEST_CASE("Waveshaper: Region 3 (knee) is strictly monotonic")
+{
+    const float t    = 0.8f;
+    const float knee = 0.1f;
+
+    const float a = t * (1.0f - knee);
+    const float b = t * (1.0f + knee);
+
+    /* ! Do not use an extremely large N here !
+                    Why?
+    * Near b, the quartic becomes almost flat because its
+    * derivative approaches zero. With float precision,
+    * two extremely close input values can round to exactly
+    * the same output float!
+    */
+    constexpr int N = 64;
+
+    float previousX = a;
+    float previousY = HTekDistortionEffect::waveshapeTest(previousX, t, knee);
+    constexpr float du = 1.0f / static_cast<float>(N);
+    for (int i = 1; i <= N; ++i)
+    {
+        const float u = static_cast<float>(i) * du;
+        const float x = a + (b - a) * u;
+
+        const float y = HTekDistortionEffect::waveshapeTest(x, t, knee);
+
+        // Strict monotonicity: x increased, therefore y must also increase.
+        REQUIRE(x > previousX);
+        REQUIRE(y > previousY);
+
+        previousX = x;
+        previousY = y;
     }
 }
 
