@@ -1,7 +1,7 @@
 # HTekDistortion Plugin
 
 ## Description
-A piecewise, memoryless soft-knee hard clipper, where the knee transition is implemented by smoothstep interpolation between linear and saturated regions, with optional bias and baseline subtraction (DC compensation).
+A piecewise, memoryless soft-knee hard clipper, where a monotonic quartic curve smoothly transitions from the linear region into hard saturation without foldback, with optional bias and baseline subtraction for DC compensation.
 
 <img src="images/plugin.png" width="620" height="320">
 
@@ -11,7 +11,7 @@ Higher drive pushes more signal into the knee/clip region, thus gives more disto
 
 ### preHPF
 
-High-pass filter cutoff (StateVariableTPTFilter highpass) that runs before the waveshaper. User has the ability to remove low frequencies before clipping so bass doesn't dominate the distortion.
+High-pass filter cutoff (`StateVariableTPTFilter` highpass) that runs before the waveshaper. User has the ability to remove low frequencies before clipping so bass doesn't dominate the distortion.
 
 ### Threshold (threshold)
 
@@ -19,8 +19,9 @@ Sets the clip ceiling. Increasing threshold allows higher peaks through, often l
 
 ### Knee (knee)
 
-Controls the width of the knee region around the threshold. Knee uses smoothstep interpolation between linear and clipped output. If knee is zero we have a very hard clip behavior (more harsh highs/aliasing). With a higher knee we have a smoother transition and softer distortion character.
+Controls the width of the transition region around the threshold. The knee uses a monotonic C<sup>2</sup> quartic curve to smoothly reduce the transfer slope from the linear region into hard clipping. With `knee = 0`, the waveshaper behaves like a hard clipper, producing stronger high-order harmonics and more aliasing. Increasing the knee widens the transition, producing a smoother and softer distortion character.
 
+The original sign of $x$ is restored after this magnitude mapping.
 ### Bias (bias)
 
 Adds a DC offset before shaping: `waveshape(x + b, ...)`. Creates even harmonics and a more "dirty" tone breaking the odd-symmetric property of the transfer curve.
@@ -200,3 +201,344 @@ before `cmake --build <build_folder>` .
 Test binary will be under `build/effects/tests/` (`.../Debug/HTekEffectsTests.exe` on Windows).
 
 ---
+
+## Appendix 
+
+### Waveshaper 
+Check `effects/Distortion.cpp` function `waveshape()`.
+
+For an input audio sample $x$, let $f(x)$ be the output audio sample where
+
+For $k>0$,
+
+```math
+f(x)=
+\begin{cases}
+x, & |x|\le a
+\qquad\qquad \text{Region 1: linear}
+\\
+\mathrm{sgn}(x)\cdot\left[a+(b-a)\cdot q(u)\right],
+& a\lt|x|\lt b
+\qquad\text{Region 2: knee}
+\\
+\mathrm{sgn}(x)\cdot t,
+& |x|\ge b
+\qquad\qquad\hspace{0.065cm}\text{Region 3: hard clip}
+\end{cases}
+```
+with
+
+- $$a=t \cdot (1-k), \qquad b=t \cdot (1+k) $$
+
+- $$u= \frac{|x|-a}{b-a} $$
+
+- $$q(u)=u-u^3+\frac{1}{2}u^4 $$
+
+
+where
+
+- $x$: input audio sample.
+- $t$: clipping threshold; the maximum output magnitude after saturation.
+- $k$: knee parameter controlling the width of the transition region.
+- $a$: start of the knee region.
+- $b$: end of the knee region.
+- $u$: normalized position of the input magnitude inside the knee.
+- $q(u)$: quartic function whose role is to curve the normalized knee transition.
+- $\mathrm{sgn}(x)$: restores the sign of the original input sample.
+
+For $k=0$, since $a=b=t$,
+
+```math
+f(x)=
+\begin{cases}
+x, & |x|\le t \\
+\mathrm{sgn}(x)\cdot t, & |x|>t
+\end{cases}
+```
+
+<hr style="border: 1px solid gray;">
+
+#### Region 1 / Linear
+##### Case 1 $(k>0)$:
+
+For
+
+$$
+|x|\le a,
+$$
+
+the input sample passes through unchanged:
+
+$$
+f(x)=x.
+$$
+
+The slope is
+
+$$
+f'(x)=1.
+$$
+
+At the boundary $|x|=a$, the quartic knee joins the linear region with the same slope,
+
+$$
+q'(0)=1,
+$$
+
+so $f'(x)$ remains continuous there.
+
+---
+
+##### Case 2 $(k=0)$:
+
+When
+
+$$
+k=0,
+$$
+
+we have
+
+$$
+a=b=t.
+$$
+
+The linear region becomes
+
+$$
+|x|\le t,
+$$
+
+with
+
+$$
+f(x)=x.
+$$
+
+For the interior $|x|\lt t,$ the slope is $f'(x)=1.$
+
+At the boundary points
+
+```math
+x \in \{-t,t\}
+```
+
+the derivative does not exist, because the linear region joins directly to the hard-clipped region.
+
+<hr style="border: 1px solid gray;">
+
+#### Region 3 / Hard Clip
+
+##### Case 1 $(k>0)$:
+
+For
+
+$$
+|x|\ge b,
+$$
+
+the output magnitude is fixed at the clipping threshold:
+
+$$
+f(x)=\mathrm{sgn}(x)\cdot t.
+$$
+
+Therefore,
+
+$$
+|f(x)|=t.
+$$
+
+The slope is
+
+$$
+f'(x)=0.
+$$
+
+At the boundary $|x|=b$, the quartic knee joins the hard-clipped region with the same slope,
+
+$$
+q'(1)=0,
+$$
+
+so $f'(x)$ remains continuous there.
+
+---
+
+##### Case 2 $(k=0)$:
+
+When
+
+$$
+k=0,
+$$
+
+we have
+
+$$
+a=b=t.
+$$
+
+The hard-clipped region becomes
+
+$$
+|x|\ge t,
+$$
+
+with
+
+$$
+f(x)=\mathrm{sgn}(x)\cdot t.
+$$
+
+For the interior $|x|>t,$ the slope is $f'(x)=0$.
+
+At the boundary points
+
+```math
+x \in \{-t,t\}
+```
+
+
+
+the derivative does not exist, because the linear region joins directly to the hard-clipped region.
+
+<hr style="border: 1px solid gray;">
+
+#### Region 2 / C<sup>2</sup> Quartic Knee
+
+Notice that the knee branch is never reached for $k=0$, because in that case, the knee region is empty and the waveshaper
+reduces to a hard clipper ($a=b=t$).
+
+Therefore, if $a<|x|<b$ and $k>0$, then $|x|$ falls inside the knee region.
+
+The input magnitude is mapped from the knee interval
+
+$$
+|x| \in (a,b)
+$$
+
+to a normalized position
+
+$$
+u \in (0,1)
+$$
+
+using
+
+$$
+u = \frac{|x|-a}{b-a}.
+$$
+
+So that
+
+$$
+|x| \rightarrow a^+ \Leftrightarrow u\rightarrow 0^+
+$$
+
+and
+
+$$
+|x| \rightarrow b^- \Leftrightarrow u\rightarrow 1^-.
+$$
+
+The normalized position is then passed through the quartic transition
+
+$$
+q(u)=u-u^3+\frac{1}{2}u^4.
+$$
+
+For this quartic,
+
+$$
+\lim_{u\to0^+}q(u)=0
+$$
+
+and
+
+$$
+\lim_{u\to1^-}q(u)=\frac12.
+$$
+
+
+so the mapping is
+
+$$
+u \in (0,1)
+\quad\longrightarrow\quad
+q(u) \in \left(0,\frac12\right)
+$$
+
+Also
+
+$$
+q'(u)=1-3u^2+2u^3=(1-u)^2(2u+1)
+$$
+
+and
+
+$$
+q''(u)=-6u(1-u).
+$$
+
+Therefore:
+
+- $q'(0)=1$: the knee joins the linear region with slope 1.
+- $q'(1)=0$: the knee joins the clipped region with slope 0.
+- $q''(0)=q''(1)=0$: the second derivative matches at both joins.
+- $q'(u)>0$ for $u \in (0,1)$: the knee is strictly monotonic and has no foldback.
+
+The quartic value is then mapped back to an output magnitude:
+
+$$
+|f(x)|=a+(b-a)q(u).
+$$
+
+Since
+
+$$
+q(u) \in \left(0,\frac{1}{2}\right),
+$$
+
+the output magnitude maps as
+
+$$
+|f(x)| \in \left(a,\frac{a+b}{2}\right).
+$$
+
+Because
+
+$$
+a=t(1-k), \qquad b=t(1+k),
+$$
+
+we have
+
+$$
+\frac{a+b}{2}=t.
+$$
+
+Therefore,
+
+$$
+|f(x)| \in (a,t).
+$$
+
+Therefore the complete knee mapping is
+
+$$
+|x| \in (a,b)
+\quad\longrightarrow\quad
+u \in (0,1)
+\quad\longrightarrow\quad
+q(u) \in \left(0,\frac12\right)
+\quad\longrightarrow\quad
+|f(x)| \in (a,t).
+$$
+
+Finally, the original input sign is restored:
+
+$$
+f(x)=\mathrm{sgn}(x) \cdot |f(x)|
+$$
+<hr style="border: 1px solid gray;">
